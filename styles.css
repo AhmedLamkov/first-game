@@ -88,6 +88,10 @@ h1 {
   color: #16D9E3;
 }
 
+.time_btn1:active {
+  padding: 0px 0px 5px;
+  box-shadow: 0 0 25px #16D9E3 ;
+}
 
 .hide {
   opacity: 0;
