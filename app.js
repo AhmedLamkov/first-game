@@ -4,40 +4,59 @@ const TimeList = document.querySelector ('#time-list')
 const timeEl = document.querySelector ('#time')
 const board = document.querySelector ('#board')
 const colors = ['#9c2422','#063beb','#219c2d','#e0bd2b','#a63aa0','#38df28','#e25a10','#1ecdc8']
+const playagain = document.querySelector('.time_btn1')
+const TimeEnd = document.querySelector('.hidden')
+const scoreEl = document.querySelector('#score')
+let gameInterval;
 let time = 0
 let score = 0
 
-startBtn.addEventListener ('click', (event) => {
-        event.preventDefault()
-        screens[0].classList.add('up')
-    }) 
 
-TimeList.addEventListener ('click', (event) => {
+const handleStart = (event) => {
+    event.preventDefault()
+    screens[1].scrollIntoView({ behavior: 'smooth'})
+    TimeEnd.classList.add('hidden_active')
+     
+}
+startBtn.addEventListener ('click', handleStart) 
+
+const handlePlayAgain = (event) => {
+    screens[1].scrollIntoView({ behavior: 'smooth'})
+    playagain.parentNode.classList.remove('result_active')
+    setTime(time)
+    score = 0;
+}
+playagain.addEventListener('click', handlePlayAgain)
+
+const handleTimelist =(event) => {
     if (event.target.classList.contains ('time-btn')) {
        time = parseInt(event.target.getAttribute ('data-time'))
-       screens[1].classList.add('up')
+       screens[2].scrollIntoView({ behavior: 'smooth'})
        startGame ()
-    }
-})
+    } 
+}
+TimeList.addEventListener('click',handleTimelist )
 
-board.addEventListener ('click', (event) => {
-    if (event.target.classList.contains ('circle')){
+const handleBoardClick = (event) => {
+    if (event.target.classList.contains('circle')){
         score++
         event.target.remove()
         createRandomCircle()
+        
          
     }
-})
-
+}
 
 function startGame() {
-    setInterval(decreaseTime, 1000)
+    board.addEventListener('click', handleBoardClick)
+    gameInterval = setInterval(decreaseTime, 1000)
     createRandomCircle()
-    setTime(time)
+    
 }
 function decreaseTime() {
     if (time === 0 ) {
         finishGame()
+        
     } else {
     let current = --time
     if (current <10) {
@@ -46,12 +65,22 @@ function decreaseTime() {
     setTime(current)
     }
 }
+
 function setTime(value) {
-    timeEl.innerHTML=`00:${value}`
+    timeEl.innerHTML = `00:${value}`
 }
+
+function setScore(value) {
+    scoreEl.innerHTML = value
+}
+
 function finishGame () {
-    timeEl.parentNode.remove()
-    board.innerHTML = `<h1> Cчет: <span class="primary">${score}</span></h1>`
+    clearInterval(gameInterval);
+    document.querySelector('.circle').remove()
+    playagain.parentNode.classList.add('result_active')
+    board.removeEventListener('click', handleBoardClick);
+    setScore(score);
+    
 }
 
 function createRandomCircle(){
